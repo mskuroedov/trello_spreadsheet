@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Diploma project</title>
 </head>
 <body>
 <form onsubmit="return createTable()">
-    <input name="name" type="text" value="Моя таблица">
+    <input name="table" type="text" value="БДДС" hidden>
+    <input name="name" type="text" value="MY COMPANY">
     <input id="table_create_submit" type="submit" value="Создать таблицу">
 </form>
 <p id="table_created" style="display: none;"><a href="" target="_blank">Таблица</a> успешно создана</p>
@@ -26,6 +27,7 @@
                 "X-CSRFToken": '{{ csrf_token }}'
             },
             data: {
+                table: $('[name=table]').val(),
                 name: $('[name=name]').val()
             },
             success: function (resp) {
