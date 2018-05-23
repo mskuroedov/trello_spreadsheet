@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form onsubmit="return createTable()">
+    <input name="name" type="text" value="Моя таблица">
+    <input id="table_create_submit" type="submit" value="Создать таблицу">
+</form>
+<p id="table_created" style="display: none;"><a href="" target="_blank">Таблица</a> успешно создана</p>
+<p id="table_create_error" style="display: none;">Ошибка при создании таблицы</p>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+</script>
+<script>
+    const createTable = function () {
+        $.ajax({
+            type: 'POST',
+            url: "/table/create",
+            headers: {
+                "X-CSRFToken": '{{ csrf_token }}'
+            },
+            data: {
+                name: $('[name=name]').val()
+            },
+            success: function (resp) {
+                console.log(resp);
+                if (!resp.error) {
+                    $('#table_created').show();
+                    $('#table_created a').attr('href', resp.url)
+                } else {
+                    $('#table_create_error').show();
+                }
+            },
+            error: function (resp) {
+                console.log(resp);
+            },
+            beforeSend: function () {
+                $('#table_create_submit').attr('disabled', true);
+            },
+            complete: function () {
+                $('#table_create_submit').attr('disabled', false);
+            }
+        });
+        return false;
+    }
+</script>
+</html>
