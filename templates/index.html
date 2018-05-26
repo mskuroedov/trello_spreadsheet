@@ -11,7 +11,8 @@
     <input id="table_create_submit" type="submit" value="Создать таблицу">
 </form>
 <p id="table_created" style="display: none;"><a href="" target="_blank">Таблица</a> успешно создана</p>
-<p id="table_create_error" style="display: none;">Ошибка при создании таблицы</p>
+<p id="board_created" style="display: none;"><a href="" target="_blank">Доска</a> успешно создана</p>
+<p id="create_error" style="display: none;">Ошибка при создании</p>
 
 </body>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -34,9 +35,11 @@
                 console.log(resp);
                 if (!resp.error) {
                     $('#table_created').show();
-                    $('#table_created a').attr('href', resp.url)
+                    $('#table_created a').attr('href', resp.sheets_url)
+                    $('#board_created').show();
+                    $('#board_created a').attr('href', resp.trello_url)
                 } else {
-                    $('#table_create_error').show();
+                    $('#create_error').show();
                 }
             },
             error: function (resp) {
