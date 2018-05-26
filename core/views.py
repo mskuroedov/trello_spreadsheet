@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-import trello
+import json
 from apiclient.discovery import build
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -9,7 +9,7 @@ from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
 from trello import TrelloClient
 
-from trello_spreadsheets_django.consts import google_config
+from trello_spreadsheets_django.consts import google_config, trello_config
 
 
 def index(request):
@@ -50,9 +50,9 @@ def create_table(request):
                                                 },
                                                 "userEnteredFormat": {
                                                     "backgroundColor": {
-                                                        "red": 0,
-                                                        "green": 0,
-                                                        "blue": 0.5,
+                                                        "red": 1,
+                                                        "green": 0.5,
+                                                        "blue": 0,
                                                         "alpha": 255
                                                     }
                                                 }
@@ -84,13 +84,16 @@ def create_table(request):
 
     # trello
 
-    client = TrelloClient(**{
-        "api_key": "e041ccfe0c269accb789c65b2314667a",
-        "api_secret": "d82c6d6e473bead3e7de85d96af927a8ba621e8a5ce4b7ecaf6ef89276238088",
-        "token": "71aebf78a786b366035292ac19f8897b2c97503de3b0165acf74b3e3cbef1f92",
-        "token_secret": "your-oauth-token-secret"
-    })
-    trello_board = client.add_board('Test', permission_level='private')
+    with open(trello_config, 'r') as file_obj:
+        trello_credentials = json.load(file_obj)
+        client = TrelloClient(**trello_credentials)
+    trello_board = client.add_board(company_name, permission_level='private')
+    for trello_list in trello_board.all_lists():
+        trello_list.close()
+
+    chek_list = trello_board.add_list('Чек')
+    trello_card = chek_list.add_card('Project 1')
+    trello_card.add_checklist('Hui', ['Один', 'Два'])
 
     return JsonResponse({'error': error, 'sheets_url': sheets_url, 'trello_url': trello_board.url})
 
