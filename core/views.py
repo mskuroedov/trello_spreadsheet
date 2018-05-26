@@ -9,7 +9,7 @@ from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
 from trello import TrelloClient
 
-from trello_spreadsheets_django.consts import google_config, trello_config
+from trello_spreadsheets_django.consts import google_config, trello_config, settings_file
 
 
 def index(request):
@@ -28,6 +28,9 @@ def create_table(request):
     creds = ServiceAccountCredentials.from_json_keyfile_name(google_config, scope)
     sheets_service = build('sheets', 'v4', http=creds.authorize(Http()))
     drive_service = build('drive', 'v3', http=creds.authorize(Http()))
+    settings = {}
+    with open(settings_file, 'r') as file_obj:
+        settings = json.load(file_obj)
 
     error = None
     sheets_url = None
@@ -72,7 +75,7 @@ def create_table(request):
             body={
                 'type': 'user',
                 'role': 'owner',
-                'emailAddress': 'vladzax95@gmail.com'
+                'emailAddress': settings.get('owner_email')
             },
             fields='id',
             transferOwnership=True
