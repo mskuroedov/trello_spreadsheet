@@ -1,6 +1,11 @@
 from __future__ import print_function
 
+import sys
+
+import calendar
+import datetime
 import json
+import locale
 from apiclient.discovery import build
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -9,7 +14,13 @@ from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
 from trello import TrelloClient
 
-from trello_spreadsheets_django.consts import google_config, trello_config, settings_file
+from core.spreadsheets_helpers import Table, Sheet
+from trello_spreadsheets_django.consts import google_config, settings_file, trello_config
+
+if sys.platform == 'win32':
+    locale.setlocale(locale.LC_ALL, 'rus_rus')
+else:
+    locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
 
 def index(request):
@@ -28,119 +39,53 @@ def create_table(request):
     creds = ServiceAccountCredentials.from_json_keyfile_name(google_config, scope)
     sheets_service = build('sheets', 'v4', http=creds.authorize(Http()))
     drive_service = build('drive', 'v3', http=creds.authorize(Http()))
-    settings = {}
     with open(settings_file, 'r') as file_obj:
         settings = json.load(file_obj)
+
+    current_month = datetime.date.today().month
+    months = []
+    for month in range(current_month, current_month + 3):
+        months.append(calendar.month_name[month])
 
     error = None
     sheets_url = None
     try:
-        sheets_response = sheets_service.spreadsheets().create(
-            body={
-                "properties": {
-                    "title": 'Бюджет движения денежных средств компании "' + company_name + '"'
-                },
-
-                "sheets": [
-                    {'properties': {'sheetType': 'GRID',
-                                    'sheetId': 0,
-                                    'title': 'БДДС',
-                                    'gridProperties': {'rowCount': 8, 'columnCount': 5}},
-                     "data": [
-                         {
-                             "rowData": [
-                                 {
-                                     "values": [
-                                         {
-                                             "userEnteredValue": {
-                                                 "stringValue": ''
-                                             },
-                                             "userEnteredFormat": {
-                                                 "backgroundColor": {
-                                                     "red": 1,
-                                                     "green": 1,
-                                                     "blue": 1,
-                                                 }
-                                             }
-                                         }
-                                     ]
-                                 },
-                                 {
-                                     "values": [
-                                         {
-                                             "userEnteredValue": {
-                                                 "stringValue": 'Возможные доходы'
-                                             },
-                                             "userEnteredFormat": {
-                                                 "backgroundColor": {
-                                                     "red": 0.8,
-                                                     "green": 0.8,
-                                                     "blue": 0,
-                                                     "alpha": 255
-                                                 }
-                                             }
-                                         }
-                                     ]
-                                 },
-                                 {
-                                     "values": [
-                                         {
-                                             "userEnteredValue": {
-                                                 "stringValue": ''
-                                             }
-                                         }
-                                     ]
-                                 },
-                                 {
-                                     "values": [
-                                         {
-                                             "userEnteredValue": {
-                                                 "stringValue": 'Доходы'
-                                             },
-                                             "userEnteredFormat": {
-                                                 "backgroundColor": {
-                                                     "red": 0,
-                                                     "green": 0.8,
-                                                     "blue": 1,
-                                                     "alpha": 255
-                                                 }
-                                             }
-                                         }
-                                     ]
-                                 },
-                                 {
-                                     "values": [
-                                         {
-                                             "userEnteredValue": {
-                                                 "stringValue": ''
-                                             }
-                                         }
-                                     ]
-                                 },
-                                 {
-                                     "values": [
-                                         {
-                                             "userEnteredValue": {
-                                                 "stringValue": 'Итого доходы'
-                                             },
-                                             "userEnteredFormat": {
-                                                 "backgroundColor": {
-                                                     "red": 0,
-                                                     "green": 0.95,
-                                                     "blue": 0,
-                                                     "alpha": 255
-                                                 }
-                                             }
-                                         }
-                                     ]
-                                 }
-                             ],
-                         },
-                     ]
-                     }
-                ]
-            }
-        ).execute()
+        table = Table('Бюджет движения денежных средств компании "%s"' % company_name)
+        sheet = Sheet('БДДС')
+        table.addSheet(sheet)
+        sheet.addRow(
+            titles=['Возможные доходы'],
+            default_color='#c9daf8'
+        ).addRow(
+            titles=['Наименование проекта', 'Единицы измерения'] + months,
+            default_color='#c9daf8'
+        ).addRow(
+            titles=['Итого возможных доходов', 'руб.', '=SUM(A1:C1)'],
+            types=['stringValue', 'stringValue', 'formulaValue'],
+            default_color='#c9daf8'
+        ).addRow(
+            titles=['Итого доходов', 'руб.'],
+            default_color='#93c47d'
+        )
+        sheets_response = sheets_service.spreadsheets().create(body=table.body).execute()
+        # sheets_service.spreadsheets().batchUpdate(
+        #     spreadsheetId=sheets_response.get('spreadsheetId'),
+        #     body={
+        #         "requests": [
+        #             {
+        #                 "insertDimension": {
+        #                     "range": {
+        #                         "sheetId": 0,
+        #                         "dimension": "ROWS",
+        #                         "startIndex": 1,
+        #                         "endIndex": 3
+        #                     },
+        #                     "inheritFromBefore": False
+        #                 }
+        #             },
+        #         ],
+        #     }
+        # ).execute()
 
         drive_response = drive_service.permissions().create(
             fileId=sheets_response.get('spreadsheetId'),
@@ -158,24 +103,35 @@ def create_table(request):
         error = str(e)
 
     # trello
-    
-    # with open(trello_config, 'r') as file_obj:
-    #     trello_credentials = json.load(file_obj)
-    #     client = TrelloClient(**trello_credentials)
-    # trello_board = client.add_board(company_name, permission_level='private')
-    # for trello_list in trello_board.all_lists():
-    #     trello_list.close()
-    #
-    # chek_list = trello_board.add_list('Планирование')
-    # chek_list = trello_board.add_list('Проекты в работе')
-    # chek_list = trello_board.add_list('Завершенные проекты')
-    # # здесь сетап на 1 этап
-    # #имя проекта
-    # trello_card = chek_list.add_card('Project 1')
-    # # чек-лист 1 этапа
-    # trello_card.add_checklist('step_name', ['Подготовить техноэкономическое обоснование','Оценка по проекту','Предоставить коммерческое предложение заказчику','Формирование ТЗ по требованиям заказчика','Планирование бюджета проекта','Переключить статус проекта',])
-    # # trello_card.
-    return JsonResponse({'error': error, 'sheets_url': sheets_url, })
+
+    with open(trello_config, 'r') as file_obj:
+        trello_credentials = json.load(file_obj)
+        client = TrelloClient(**trello_credentials)
+    trello_board = client.add_board(company_name, permission_level='private')
+    for trello_list in trello_board.all_lists():
+        trello_list.close()
+
+    chek_list = trello_board.add_list('Планирование')
+    chek_list = trello_board.add_list('Проекты в работе')
+    chek_list = trello_board.add_list('Завершенные проекты')
+    # здесь сетап на 1 этап
+    # имя проекта
+    trello_card = chek_list.add_card('Project 1')
+    # чек-лист 1 этапа
+    trello_card.add_checklist(
+        'step_name',
+        [
+            'Подготовить техноэкономическое обоснование', 'Оценка по проекту',
+            'Предоставить коммерческое предложение заказчику',
+            'Формирование ТЗ по требованиям заказчика', 'Планирование бюджета проекта',
+            'Переключить статус проекта',
+        ]
+    )
+    return JsonResponse({
+        'error': error,
+        'sheets_url': sheets_url,
+        'trello_url': trello_board.url
+    })
 
 # @require_POST
 # def create_table(request):
