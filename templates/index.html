@@ -5,7 +5,17 @@
     <title>Diploma project</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+    <style>
+        .payment-paper {
+            background: white;
+            border: 1px solid lightgray;
+            width: 400px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border-radius: 16px;
+            display: flex;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -35,27 +45,41 @@
 <section>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-4 px-0" id="sidebar">
+            <div class="col-auto px-0" id="sidebar">
                 <div>
                     <ul>
-                        <li><a href="#step-1" role="button" data-toggle="collapse" class="nav-link">Этап 1 </a></li>
-                        <li><a href="#step-2" role="button" data-toggle="collapse" class="nav-link">Этап 2</a></li>
-                        <li><a href="#step-3" role="button" data-toggle="collapse" class="nav-link">Этап 3</a></li>
-                        <li><a href="#step-4" role="button" data-toggle="collapse" class="nav-link">Этап 4</a></li>
                         <li>
-                            <button class="btn btn-secondary " data-toggle="collapse" data-target="#section-new-firm" id="new-firm">Новая фирма</button>
+                            <a href="#step-1" role="button" data-toggle="collapse" class="nav-link">Этап 1 </a>
                         </li>
                         <li>
-                            <button class="btn btn-secondary " id="new-proj">Новый проект</button>
+                            <a href="#step-2" role="button" data-toggle="collapse" class="nav-link">Этап 2</a>
                         </li>
                         <li>
-                            <button class="btn btn-secondary " data-toggle="collapse" data-target="#settings-firm" id="firm-settings">Новый проект</button>
+                            <a href="#step-3" role="button" data-toggle="collapse" class="nav-link">Этап 3</a>
+                        </li>
+                        <li>
+                            <a href="#step-4" role="button" data-toggle="collapse" class="nav-link">Этап 4</a>
+                        </li>
+                        <li>
+                            <button class="btn btn-secondary " data-toggle="collapse" data-target="#section-new-firm"
+                                    id="new-firm">Новая фирма
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn btn-secondary " data-toggle="collapse" data-target="#new-proj">Новый
+                                проект
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn btn-secondary " data-toggle="collapse" data-target="#settings-firm"
+                                    id="firm-settings">Расходы фирмы
+                            </button>
                         </li>
                     </ul>
                 </div>
 
             </div>
-            <div class="col-8 px-0" id="content">
+            <div class="col px-0" id="content">
                 <div id="section-new-firm" class="collapse">
                     <h2 class="display-4">Создать фирму</h2>
                     <form onsubmit="return createTable()">
@@ -74,25 +98,210 @@
                     </p>
                     <p id="create_error" style="display: none;">Ошибка при создании</p>
                 </div>
+                <div id="new-proj" class="collapse">
+                    <h5 class="display-4">Новый проект</h5>
+                    <form onsubmit="">
+                        <input type="text" class="form-control mb-3" placeholder="Задайте имя проекта" required>
+                        <button class="btn btn-success">Созадть проект</button>
+                    </form>
+                </div>
                 <div id="step-1" class="collapse">
-                    <p>проект 1этап</p>
+                    <div class="row">
+                        <div class="col-12">
 
+                            <h4>Project_name</h4>
+                            <p>status: <strong>1 этап</strong>()</p>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-danger btn-sm">Ударить проект</button>
+                            <button class="btn btn-success btn-sm">Перейти к выбору контракта</button>
+                        </div>
+                    </div>
                 </div>
                 <div id="step-2" class="collapse">
-                    <p>проект 2этап</p>
+                    <div class="row">
+                        <div class="col-12">
+
+                            <h4>Project_name</h4>
+                            <p>status: <strong>2 этап</strong>(подписание договора)</p>
+                        </div>
+                        <div class="col-12">
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <legend class="col-form-label col-sm-2 pt-0">Выбрать контракт</legend>
+                                    <div class="col-sm-10">
+                                        <div class="form-check">
+                                            <input class="form-check-input contract" type="radio" name="gridRadios"
+                                                   id="contract1" value="1" checked>
+                                            <label class="form-check-label" for="contract1">
+                                                Договор с пост оплатой по фиксированной цене
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input contract" type="radio" name="gridRadios"
+                                                   id="contract2" value="2">
+                                            <label class="form-check-label" for="contract2">
+                                                Договор с фиксированной ценой и авансовыми платежами
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input contract" type="radio" name="gridRadios"
+                                                   id="contract3" value="3">
+                                            <label class="form-check-label" for="contract3">
+                                                Договор с возмещением затрат
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-12" id="contract-form">
+                            <div class="type-1 contract-form" style="display: none;">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="contract-type-first-price">Сумма контракта</label>
+                                                <input id="contract-type-first-price" type="text" class="form-control"
+                                                       placeholder="1000000">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="contract-type-first-date">Дата завершения</label>
+                                                <input type="text" class="form-control" id="contract-type-first-date"
+                                                       placeholder="1000000">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <button class="btn btn-success btn-sm">Установить договор</button>
+
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div class="type-2 contract-form" style="display: none;">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label>Сумма контракта</label>
+                                                <input type="text" class="form-control"
+                                                       placeholder="1000000">
+                                            </div>
+                                        </div>
+                                        <div class="col-12" id="second-type-contract-dates">
+                                            {#                                            template#}
+                                            <div class="form-group" style="display: none;"
+                                                 id="second-type-contract-date-tmplt">
+                                                <label for="">Дата платежа</label>
+                                                <input type="text" class="form-control" id=""
+                                                       placeholder="1000000">
+                                                <button class="btn btn-danger btn-sm rmv">Rmv</button>
+                                            </div>
+                                            {#                                            start#}
+                                            <div class="form-group">
+                                                <label for="formGroupExampleInput2">Дата платежа</label>
+                                                <input type="text" class="form-control" id=""
+                                                       placeholder="1000000">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="button" class="btn-info btn btn-sm" id="add-date">Добавить дату</button>
+
+                                            <button class="btn btn-success btn-sm">Установить договор</button>
+
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div class="type-3 contract-form" style="display: none;">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <button class="btn btn-success btn-sm">Установить договор</button>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
                 <div id="step-3" class="collapse">
-                    <p>проект 3этап</p>
+                    <div class="row">
+                        <div class="col-12">
+
+                            <h4>Project_name</h4>
+                            <p>status: <strong>3 этап</strong>(разработка)</p>
+                        </div>
+                        <div class="col-12">
+                            <p>check-list</p>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-success btn-sm">Перейти к сдаче проекта</button>
+                        </div>
+
+                    </div>
 
                 </div>
                 <div id="step-4" class="collapse">
-                    <p>проект 4этап</p>
+
+                    <div class="row">
+                        <div class="col-12">
+
+                            <h4>Project_name</h4>
+                            <p>status: <strong>4 этап</strong>(сдача/приемка проекта)</p>
+                        </div>
+                        <div class="col-12">
+                            <p>check-list</p>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-warning btn-sm">Закрыть проект</button>
+                            <button class="btn btn-success btn-sm">Перейти к сдаче проекта</button>
+                        </div>
+                    </div>
 
                 </div>
                 <div id="settings-firm" class="collapse">
-                    <p>Настройки</p>
-{#                    TODO нужны настройки расходов для фирмы - добавление обязательных расходов#}
+                    <p>Обязательные расходы фирмы</p>
+                    <div id="payment-form-tmplt" style="display: none;" class="payment-paper">
+                        <div class="row">
+                            <div class="col-12">
+                                <button class="ml-auto btn btn-sm btn-outline-danger delete-payment">Удалить</button>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Наименование расходов</label>
+                                    <input type="text" class="form-control"
+                                           placeholder="Расход">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="formGroupExampleInput2">Объем расходов ₽</label>
+                                    <input type="text" class="form-control" id="formGroupExampleInput2"
+                                           placeholder="1000000">
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <form novalidate id="payments">
+                        <div id="payments-row">
+
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <button class="btn btn-success" id="add-to-payments">Добавить позицию</button>
+                            </div>
+                        </div>
+                    </form>
+                    {#                    TODO нужны настройки расходов для фирмы - добавление обязательных расходов#}
                 </div>
             </div>
         </div>
@@ -150,9 +359,37 @@
 </script>
 
 <script>
-    $('#new-firm').on('click', function () {
+    $('#add-to-payments').on('click', function () {
+        let tmplt = $('#payment-form-tmplt').clone().removeAttr('id');
+        $('#payments-row').append(tmplt);
+        tmplt.show();
+        $(tmplt).find('.delete-payment').on('click', function () {
+            $(this).parent().parent().parent().remove();
+        })
+    })
+</script>
+<script>
+    {#$('[data-toggle=collapse]').on('click', function () {#}
+    {#    $('.collapse').removeClass('show');#}
+    {#    let target = $(this).attr('href');#}
+    {#    $(target).show();#}
 
-        $('#section-new-firm').show();
+</script>
+<script>
+    $('.contract').on('change', function () {
+        let type = $(this).val();
+        $('.contract-form').hide();
+        $('#contract-form .type-' + type).show();
+    })
+</script>
+<script>
+    $('#add-date').on('click', function () {
+        var tmplt = $('#second-type-contract-date-tmplt').clone().removeAttr('id');
+        $('#second-type-contract-dates').append(tmplt);
+        tmplt.show();
+        tmplt.find('.rmv').on('click',function () {
+            $(this).parent().remove();
+        })
     })
 </script>
 </html>

@@ -159,22 +159,22 @@ def create_table(request):
 
     # trello
     
-    with open(trello_config, 'r') as file_obj:
-        trello_credentials = json.load(file_obj)
-        client = TrelloClient(**trello_credentials)
-    trello_board = client.add_board(company_name, permission_level='private')
-    for trello_list in trello_board.all_lists():
-        trello_list.close()
-    
-    chek_list = trello_board.add_list('Планирование')
-    chek_list = trello_board.add_list('Проекты в работе')
-    chek_list = trello_board.add_list('Завершенные проекты')
-    # здесь сетап на 1 этап 
-    #имя проекта
-    trello_card = chek_list.add_card('Project 1') 
-    # чек-лист 1 этапа
-    trello_card.add_checklist('step_name', ['Подготовить техноэкономическое обоснование','Оценка по проекту','Предоставить коммерческое предложение заказчику','Формирование ТЗ по требованиям заказчика','Планирование бюджета проекта','Переключить статус проекта',])
-    trello_card.
+    # with open(trello_config, 'r') as file_obj:
+    #     trello_credentials = json.load(file_obj)
+    #     client = TrelloClient(**trello_credentials)
+    # trello_board = client.add_board(company_name, permission_level='private')
+    # for trello_list in trello_board.all_lists():
+    #     trello_list.close()
+    #
+    # chek_list = trello_board.add_list('Планирование')
+    # chek_list = trello_board.add_list('Проекты в работе')
+    # chek_list = trello_board.add_list('Завершенные проекты')
+    # # здесь сетап на 1 этап
+    # #имя проекта
+    # trello_card = chek_list.add_card('Project 1')
+    # # чек-лист 1 этапа
+    # trello_card.add_checklist('step_name', ['Подготовить техноэкономическое обоснование','Оценка по проекту','Предоставить коммерческое предложение заказчику','Формирование ТЗ по требованиям заказчика','Планирование бюджета проекта','Переключить статус проекта',])
+    # # trello_card.
     return JsonResponse({'error': error, 'sheets_url': sheets_url, })
 
 # @require_POST
