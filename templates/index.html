@@ -3,22 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <title>Diploma project</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 </head>
 <body>
-<form onsubmit="return createTable()">
-    <input name="table" type="text" value="БДДС" hidden>
-    <input name="name" type="text" value="MY COMPANY">
-    <input id="table_create_submit" type="submit" value="Создать таблицу">
-</form>
-<p id="table_created" style="display: none;"><a href="" target="_blank">Таблица</a> успешно создана</p>
-<p id="board_created" style="display: none;"><a href="" target="_blank">Доска</a> успешно создана</p>
-<p id="create_error" style="display: none;">Ошибка при создании</p>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-info">
+        <a class="navbar-brand" href="#">MyPlan</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<section>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-4 px-0" id="sidebar">
+                <div>
+                    <ul>
+                        <li><a href="#step-1" role="button" data-toggle="collapse" class="nav-link">Этап 1 </a></li>
+                        <li><a href="#step-2" role="button" data-toggle="collapse" class="nav-link">Этап 2</a></li>
+                        <li><a href="#step-3" role="button" data-toggle="collapse" class="nav-link">Этап 3</a></li>
+                        <li><a href="#step-4" role="button" data-toggle="collapse" class="nav-link">Этап 4</a></li>
+                        <li>
+                            <button class="btn btn-secondary " data-toggle="collapse" data-target="#section-new-firm" id="new-firm">Новая фирма</button>
+                        </li>
+                        <li>
+                            <button class="btn btn-secondary " id="new-proj">Новый проект</button>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="col-8 px-0" id="content">
+                <div id="section-new-firm" class="collapse">
+                    <h2 class="display-4">Создать фирму</h2>
+                    <form onsubmit="return createTable()">
+                        <div class="form-group">
+                            <input name="table" type="text" value="БДДС" hidden>
+                            <label for="company-name">Название компании</label>
+                            <input name="name" type="text" class="form-control mb-3" id="company-name"
+                                   placeholder="my_company" value="Testing">
+                            <button id="table_create_submit" class="btn btn-success" type="submit">Base creating
+                            </button>
+                        </div>
+                    </form>
+                    <p id="table_created" style="display: none;"><a href="" target="_blank">Таблица</a> успешно создана
+                    </p>
+                    <p id="board_created" style="display: none;"><a href="" target="_blank">Доска</a> успешно создана
+                    </p>
+                    <p id="create_error" style="display: none;">Ошибка при создании</p>
+                </div>
+                <div id="step-1" class="collapse">
+                    <p>проект 1этап</p>
+
+                </div>
+                <div id="step-2" class="collapse">
+                    <p>проект 2этап</p>
+
+                </div>
+                <div id="step-3" class="collapse">
+                    <p>проект 3этап</p>
+
+                </div>
+                <div id="step-4" class="collapse">
+                    <p>проект 4этап</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 
 </body>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous">
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 <script>
     const createTable = function () {
         $.ajax({
@@ -50,9 +146,17 @@
             },
             complete: function () {
                 $('#table_create_submit').attr('disabled', false);
+                $('#new-firm').parent().remove();
             }
         });
         return false;
     }
+</script>
+
+<script>
+    $('#new-firm').on('click', function () {
+
+        $('#section-new-firm').show();
+    })
 </script>
 </html>

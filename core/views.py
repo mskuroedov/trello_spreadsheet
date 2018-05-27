@@ -38,34 +38,106 @@ def create_table(request):
         sheets_response = sheets_service.spreadsheets().create(
             body={
                 "properties": {
-                    "title": table_name + ' ' + company_name
+                    "title": 'Бюджет движения денежных средств компании "' + company_name + '"'
                 },
+
                 "sheets": [
-                    {
-                        "data": [
-                            {
-                                "rowData": [
-                                    {
-                                        "values": [
-                                            {
-                                                "userEnteredValue": {
-                                                    "stringValue": 'БЮДЖЕТ ДВИЖЕНИЯ ДЕНЕЖНЫХ СРЕДСТВ КОМПАНИИ ' + company_name
-                                                },
-                                                "userEnteredFormat": {
-                                                    "backgroundColor": {
-                                                        "red": 1,
-                                                        "green": 0.5,
-                                                        "blue": 0,
-                                                        "alpha": 255
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                ],
-                            },
-                        ]
-                    }
+                    {'properties': {'sheetType': 'GRID',
+                                    'sheetId': 0,
+                                    'title': 'БДДС',
+                                    'gridProperties': {'rowCount': 8, 'columnCount': 5}},
+                     "data": [
+                         {
+                             "rowData": [
+                                 {
+                                     "values": [
+                                         {
+                                             "userEnteredValue": {
+                                                 "stringValue": ''
+                                             },
+                                             "userEnteredFormat": {
+                                                 "backgroundColor": {
+                                                     "red": 1,
+                                                     "green": 1,
+                                                     "blue": 1,
+                                                 }
+                                             }
+                                         }
+                                     ]
+                                 },
+                                 {
+                                     "values": [
+                                         {
+                                             "userEnteredValue": {
+                                                 "stringValue": 'Возможные доходы'
+                                             },
+                                             "userEnteredFormat": {
+                                                 "backgroundColor": {
+                                                     "red": 0.8,
+                                                     "green": 0.8,
+                                                     "blue": 0,
+                                                     "alpha": 255
+                                                 }
+                                             }
+                                         }
+                                     ]
+                                 },
+                                 {
+                                     "values": [
+                                         {
+                                             "userEnteredValue": {
+                                                 "stringValue": ''
+                                             }
+                                         }
+                                     ]
+                                 },
+                                 {
+                                     "values": [
+                                         {
+                                             "userEnteredValue": {
+                                                 "stringValue": 'Доходы'
+                                             },
+                                             "userEnteredFormat": {
+                                                 "backgroundColor": {
+                                                     "red": 0,
+                                                     "green": 0.8,
+                                                     "blue": 1,
+                                                     "alpha": 255
+                                                 }
+                                             }
+                                         }
+                                     ]
+                                 },
+                                 {
+                                     "values": [
+                                         {
+                                             "userEnteredValue": {
+                                                 "stringValue": ''
+                                             }
+                                         }
+                                     ]
+                                 },
+                                 {
+                                     "values": [
+                                         {
+                                             "userEnteredValue": {
+                                                 "stringValue": 'Итого доходы'
+                                             },
+                                             "userEnteredFormat": {
+                                                 "backgroundColor": {
+                                                     "red": 0,
+                                                     "green": 0.95,
+                                                     "blue": 0,
+                                                     "alpha": 255
+                                                 }
+                                             }
+                                         }
+                                     ]
+                                 }
+                             ],
+                         },
+                     ]
+                     }
                 ]
             }
         ).execute()
@@ -86,19 +158,19 @@ def create_table(request):
         error = str(e)
 
     # trello
+    #
+    # with open(trello_config, 'r') as file_obj:
+    #     trello_credentials = json.load(file_obj)
+    #     client = TrelloClient(**trello_credentials)
+    # trello_board = client.add_board(company_name, permission_level='private')
+    # for trello_list in trello_board.all_lists():
+    #     trello_list.close()
+    #
+    # chek_list = trello_board.add_list('Чек')
+    # trello_card = chek_list.add_card('Project 1')
+    # trello_card.add_checklist('Hui', ['Один', 'Два'])
 
-    with open(trello_config, 'r') as file_obj:
-        trello_credentials = json.load(file_obj)
-        client = TrelloClient(**trello_credentials)
-    trello_board = client.add_board(company_name, permission_level='private')
-    for trello_list in trello_board.all_lists():
-        trello_list.close()
-
-    chek_list = trello_board.add_list('Чек')
-    trello_card = chek_list.add_card('Project 1')
-    trello_card.add_checklist('Hui', ['Один', 'Два'])
-
-    return JsonResponse({'error': error, 'sheets_url': sheets_url, 'trello_url': trello_board.url})
+    return JsonResponse({'error': error, 'sheets_url': sheets_url, })
 
 # @require_POST
 # def create_table(request):
