@@ -6,16 +6,14 @@ import calendar
 import datetime
 import json
 import locale
-from apiclient.discovery import build
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
-from httplib2 import Http
-from oauth2client.service_account import ServiceAccountCredentials
 from trello import TrelloClient
 
-from core.spreadsheets_helpers import Table, Sheet
-from trello_spreadsheets_django.consts import google_config, settings_file, trello_config
+from core.models import Project
+from core.spreadsheets_helpers import Table, Sheet, sheets_service, drive_service
+from trello_spreadsheets_django.consts import settings_file, trello_config
 
 if sys.platform == 'win32':
     locale.setlocale(locale.LC_ALL, 'rus_rus')
@@ -32,13 +30,6 @@ def create_table(request):
     table_name = request.POST.get('table')
     company_name = request.POST.get('name')
 
-    scope = [
-        'https://spreadsheets.google.com/feeds',
-        'https://www.googleapis.com/auth/drive'
-    ]
-    creds = ServiceAccountCredentials.from_json_keyfile_name(google_config, scope)
-    sheets_service = build('sheets', 'v4', http=creds.authorize(Http()))
-    drive_service = build('drive', 'v3', http=creds.authorize(Http()))
     with open(settings_file, 'r') as file_obj:
         settings = json.load(file_obj)
 
@@ -48,7 +39,6 @@ def create_table(request):
         months.append(calendar.month_name[month])
 
     error = None
-    sheets_url = None
     try:
         table = Table('Бюджет движения денежных средств компании "%s"' % company_name)
         sheet = Sheet('БДДС')
@@ -68,6 +58,8 @@ def create_table(request):
             default_color='#93c47d'
         )
         sheets_response = sheets_service.spreadsheets().create(body=table.body).execute()
+        tbl = Table(id=sheets_response.get('spreadsheetId'))
+
         # sheets_service.spreadsheets().batchUpdate(
         #     spreadsheetId=sheets_response.get('spreadsheetId'),
         #     body={
@@ -86,6 +78,21 @@ def create_table(request):
         #         ],
         #     }
         # ).execute()
+        # sheets_service.spreadsheets().values().batchClear(
+        #     spreadsheetId=sheets_response.get('spreadsheetId'),
+        #     body={
+        #         "ranges": [
+        #             string
+        #         ]
+        #     }
+        # ).execute()
+        # sheets_service.spreadsheets().values().batchUpdate(
+        #     spreadsheetId=sheets_response.get('spreadsheetId'),
+        #     body={
+        #         "valueInputOption": "RAW",
+        #         "data": []
+        #     }
+        # ).execute()
 
         drive_response = drive_service.permissions().create(
             fileId=sheets_response.get('spreadsheetId'),
@@ -97,8 +104,6 @@ def create_table(request):
             fields='id',
             transferOwnership=True
         ).execute()
-
-        sheets_url = sheets_response.get('spreadsheetUrl')
     except Exception as e:
         error = str(e)
 
@@ -127,10 +132,21 @@ def create_table(request):
             'Переключить статус проекта',
         ]
     )
+
+
+    project = Project.objects.create(
+        user_id=1,
+        title='Проект',
+        spreadsheet_id=sheets_response.get('spreadsheetId'),
+        spreadsheet_url=sheets_response.get('spreadsheetUrl'),
+        trelloboard_id=trello_board.id,
+        trelloboard_url=trello_board.url
+    )
+
     return JsonResponse({
         'error': error,
-        'sheets_url': sheets_url,
-        'trello_url': trello_board.url
+        'sheets_url': project.spreadsheet_url,
+        'trello_url': project.trelloboard_url
     })
 
 # @require_POST
