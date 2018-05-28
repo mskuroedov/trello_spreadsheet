@@ -11,7 +11,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from trello import TrelloClient
 
-from core.models import Project
+from core.models import UserSettings
 from core.spreadsheets_helpers import Table, Sheet, sheets_service, drive_service
 from trello_spreadsheets_django.consts import settings_file, trello_config
 
@@ -54,14 +54,12 @@ def create_table(request):
             default_color='#c9daf8'
         ).addRow( #4
             titles=[''],
-            default_color=''
         ).addRow( #5
             titles=['Итого возможных доходов', 'руб.', '=SUM(C4)', '=SUM(D4)', '=SUM(E4)'],
             types=['stringValue', 'stringValue', 'formulaValue', 'formulaValue', 'formulaValue'],
             default_color='#c9daf8'
         ).addRow( #6
             titles=[''],
-            default_color=''
         ).addRow( #7
             titles=['Подтвержденные доходы'],
             default_color='#ffff00'
@@ -70,14 +68,12 @@ def create_table(request):
             default_color='#ffff00'
         ).addRow( #9
             titles=[''],
-            default_color=''
         ).addRow( #10
             titles=['Итого доходов', 'руб.', '=SUM(C9)','=SUM(D9)','=SUM(E9)'],
             types=['stringValue', 'stringValue', 'formulaValue', 'formulaValue', 'formulaValue'],
             default_color='#93c47d'
         ).addRow( #11
             titles=[''],
-            default_color=''
         ).addRow( #12
             titles=['Расходы'],
             default_color='#f4cccc'
@@ -86,20 +82,17 @@ def create_table(request):
             default_color='#f4cccc'
         ).addRow( #14
             titles=[''],
-            default_color=''
         ).addRow( #15
             titles=['Итого расходов', 'руб.', '=SUM(C14)', '=SUM(D14)', '=SUM(E14)'],
             types=['stringValue', 'stringValue', 'formulaValue', 'formulaValue', 'formulaValue'],
             default_color='#93c47d'
         ).addRow( #16
             titles=[''],
-            default_color=''
         ).addRow( #17
             titles=['Итого чистая прибыль', 'руб.', '=SUM(C10;-C15)', '=SUM(D10;-D15)', '=SUM(E10;-E15)'],
             types=['stringValue', 'stringValue', 'formulaValue', 'formulaValue', 'formulaValue'],
             default_color='#93c47d'
         )
-
 
         sheets_response = sheets_service.spreadsheets().create(body=table.body).execute()
         tbl = Table(id=sheets_response.get('spreadsheetId'))
@@ -177,10 +170,8 @@ def create_table(request):
         ]
     )
 
-
-    project = Project.objects.create(
+    us = UserSettings.objects.create(
         user_id=1,
-        title='Проект',
         spreadsheet_id=sheets_response.get('spreadsheetId'),
         spreadsheet_url=sheets_response.get('spreadsheetUrl'),
         trelloboard_id=trello_board.id,
@@ -189,8 +180,8 @@ def create_table(request):
 
     return JsonResponse({
         'error': error,
-        'sheets_url': project.spreadsheet_url,
-        'trello_url': project.trelloboard_url
+        'sheets_url': us.spreadsheet_url,
+        'trello_url': us.trelloboard_url
     })
 
 # @require_POST
