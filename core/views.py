@@ -43,20 +43,64 @@ def create_table(request):
         table = Table('Бюджет движения денежных средств компании "%s"' % company_name)
         sheet = Sheet('БДДС')
         table.addSheet(sheet)
-        sheet.addRow(
+        sheet.addRow( #1
+            titles=['Доходы'],
+            default_color='#6d9eeb'
+        ).addRow( #2
             titles=['Возможные доходы'],
             default_color='#c9daf8'
-        ).addRow(
+        ).addRow( #3
             titles=['Наименование проекта', 'Единицы измерения'] + months,
             default_color='#c9daf8'
-        ).addRow(
-            titles=['Итого возможных доходов', 'руб.', '=SUM(A1:C1)'],
-            types=['stringValue', 'stringValue', 'formulaValue'],
+        ).addRow( #4
+            titles=[''],
+            default_color=''
+        ).addRow( #5
+            titles=['Итого возможных доходов', 'руб.', '=SUM(C4)', '=SUM(D4)', '=SUM(E4)'],
+            types=['stringValue', 'stringValue', 'formulaValue', 'formulaValue', 'formulaValue'],
             default_color='#c9daf8'
-        ).addRow(
-            titles=['Итого доходов', 'руб.'],
+        ).addRow( #6
+            titles=[''],
+            default_color=''
+        ).addRow( #7
+            titles=['Подтвержденные доходы'],
+            default_color='#ffff00'
+        ).addRow( #8
+            titles=['Наименование проекта', 'Единицы измерения'] + months,
+            default_color='#ffff00'
+        ).addRow( #9
+            titles=[''],
+            default_color=''
+        ).addRow( #10
+            titles=['Итого доходов', 'руб.', '=SUM(C9)','=SUM(D9)','=SUM(E9)'],
+            types=['stringValue', 'stringValue', 'formulaValue', 'formulaValue', 'formulaValue'],
+            default_color='#93c47d'
+        ).addRow( #11
+            titles=[''],
+            default_color=''
+        ).addRow( #12
+            titles=['Расходы'],
+            default_color='#f4cccc'
+        ).addRow( #13
+            titles=['  Постоянные'],
+            default_color='#f4cccc'
+        ).addRow( #14
+            titles=[''],
+            default_color=''
+        ).addRow( #15
+            titles=['Итого расходов', 'руб.', '=SUM(C14)', '=SUM(D14)', '=SUM(E14)'],
+            types=['stringValue', 'stringValue', 'formulaValue', 'formulaValue', 'formulaValue'],
+            default_color='#93c47d'
+        ).addRow( #16
+            titles=[''],
+            default_color=''
+        ).addRow( #17
+            titles=['Итого чистая прибыль', 'руб.', '=SUM(C10;-C15)', '=SUM(D10;-D15)', '=SUM(E10;-E15)'],
+            types=['stringValue', 'stringValue', 'formulaValue', 'formulaValue', 'formulaValue'],
             default_color='#93c47d'
         )
+
+
         sheets_response = sheets_service.spreadsheets().create(body=table.body).execute()
         tbl = Table(id=sheets_response.get('spreadsheetId'))
 

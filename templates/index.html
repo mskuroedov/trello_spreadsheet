@@ -9,17 +9,89 @@
         .payment-paper {
             background: white;
             border: 1px solid lightgray;
-            width: 400px;
+            width: 280px;
             padding: 24px;
             margin-bottom: 16px;
             border-radius: 16px;
             display: flex;
+            margin-right: 16px;
+        }
+        .payment-paper input{
+            width: auto;
+        }
+
+        #sidebar {
+            height: calc(100vh - 56px);
+            background: #f7f7f7;
+        }
+
+        #content {
+            height: calc(100vh - 56px);
+            background: rgba(0, 123, 255, 0.13);
+            overflow: hidden;
+        }
+
+        #content > div {
+            padding: 24px;
+
+        }
+
+        .left-menu {
+            background: #f7f7f7;
+            padding-left: 0;
+            list-style: none
+        }
+        .form-control{
+            width: 320px;
+        }
+        .input-group input{
+            border-right: 0;
+        }
+.input-group-btn .btn{
+    border-top-left-radius:0 ;
+    border-bottom-left-radius:0 ;
+}
+        .left-menu li {
+            padding-top: 8px;
+            padding-bottom: 8px;
+            padding-left: 16px;
+            padding-right: 16px;
+            border-bottom: 1px solid rgba(0, 123, 255, 0.13);
+        }
+
+        .left-menu li:hover {
+            background: rgba(0, 123, 255, 0.07);
+        }
+
+        .left-menu li:hover a {
+            color: #000;
+        }
+
+        .left-menu li a {
+            color: black;
+            width: 100%;
+            line-height: 1;
+            padding-left: 0;
+        }
+
+        #settings-firm {
+            overflow: hidden;
+            overflow-y: scroll;
+            max-height: calc(100vh - 56px);
+            padding-bottom: 100px;
+            padding-left: 8px;
+        }
+
+        #payments-row {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
         }
     </style>
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-info">
+    <nav class="navbar navbar-expand-lg navbar-light bd-navbar">
         <a class="navbar-brand" href="#">MyPlan</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +119,7 @@
         <div class="row">
             <div class="col-auto px-0" id="sidebar">
                 <div>
-                    <ul>
+                    <ul class="left-menu">
                         <li>
                             <a href="#step-1" role="button" data-toggle="collapse" class="nav-link">Этап 1 </a>
                         </li>
@@ -61,25 +133,25 @@
                             <a href="#step-4" role="button" data-toggle="collapse" class="nav-link">Этап 4</a>
                         </li>
                         <li>
-                            <button class="btn btn-secondary " data-toggle="collapse" data-target="#section-new-firm"
-                                    id="new-firm">Новая фирма
-                            </button>
+                            <a role="button" data-toggle="collapse" class="nav-link" href="#section-new-firm"
+                               id="new-firm">Новая фирма
+                            </a>
                         </li>
                         <li>
-                            <button class="btn btn-secondary " data-toggle="collapse" data-target="#new-proj">Новый
+                            <a role="button" data-toggle="collapse" class="nav-link" href="#new-proj">Новый
                                 проект
-                            </button>
+                            </a>
                         </li>
                         <li>
-                            <button class="btn btn-secondary " data-toggle="collapse" data-target="#settings-firm"
-                                    id="firm-settings">Расходы фирмы
-                            </button>
+                            <a role="button" data-toggle="collapse" class="nav-link" href="#settings-firm"
+                               id="firm-settings">Расходы фирмы
+                            </a>
                         </li>
                     </ul>
                 </div>
 
             </div>
-            <div class="col px-0" id="content">
+            <div class="col " id="content">
                 <div id="section-new-firm" class="collapse">
                     <h2 class="display-4">Создать фирму</h2>
                     <form onsubmit="return createTable()">
@@ -110,7 +182,7 @@
                         <div class="col-12">
 
                             <h4>Project_name</h4>
-                            <p>status: <strong>1 этап</strong>()</p>
+                            <p>status: <strong>1 этап</strong>(коммерческое предложение)</p>
                         </div>
                         <div class="col-12">
                             <button class="btn btn-danger btn-sm">Ударить проект</button>
@@ -132,7 +204,7 @@
                                     <div class="col-sm-10">
                                         <div class="form-check">
                                             <input class="form-check-input contract" type="radio" name="gridRadios"
-                                                   id="contract1" value="1" checked>
+                                                   id="contract1" value="1">
                                             <label class="form-check-label" for="contract1">
                                                 Договор с пост оплатой по фиксированной цене
                                             </label>
@@ -196,9 +268,15 @@
                                             <div class="form-group" style="display: none;"
                                                  id="second-type-contract-date-tmplt">
                                                 <label for="">Дата платежа</label>
-                                                <input type="text" class="form-control" id=""
-                                                       placeholder="1000000">
-                                                <button class="btn btn-danger btn-sm rmv">Rmv</button>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id=""
+                                                           placeholder="12.12.2018">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-btn">                                                <button
+                                                                class="btn btn-danger  rmv">Удалить</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                             {#                                            start#}
                                             <div class="form-group">
@@ -208,7 +286,9 @@
                                             </div>
                                         </div>
                                         <div class="col-12">
-                                            <button type="button" class="btn-info btn btn-sm" id="add-date">Добавить дату</button>
+                                            <button type="button" class="btn-info btn btn-sm" id="add-date">Добавить
+                                                дату
+                                            </button>
 
                                             <button class="btn btn-success btn-sm">Установить договор</button>
 
@@ -266,7 +346,7 @@
                     </div>
 
                 </div>
-                <div id="settings-firm" class="collapse">
+                <div id="settings-firm" class="collapse ">
                     <p>Обязательные расходы фирмы</p>
                     <div id="payment-form-tmplt" style="display: none;" class="payment-paper">
                         <div class="row">
@@ -287,6 +367,12 @@
                                            placeholder="1000000">
                                 </div>
                             </div>
+                            <div class="col-12">
+                                <button class="btn btn-warning btn-sm save-payment" type="button">Сохранить</button>
+                                <button class="btn btn-info btn-sm edit-payment" type="button" style="display: none">
+                                    Изменить
+                                </button>
+                            </div>
                         </div>
 
 
@@ -297,7 +383,8 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <button class="btn btn-success" id="add-to-payments">Добавить позицию</button>
+                                <button class="btn btn-success" type="button" id="add-to-payments">Добавить позицию
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -366,10 +453,26 @@
         $(tmplt).find('.delete-payment').on('click', function () {
             $(this).parent().parent().parent().remove();
         })
+        $(tmplt).find('.save-payment').on('click', function () {
+            var inputs = $(this).parent().parent().parent().find('input');
+            inputs.each(function () {
+                $(this).attr('readonly', 'readonly');
+            })
+            $(this).parent().find('.edit-payment').show();
+            $(this).hide()
+        })
+        $(tmplt).find('.edit-payment').on('click', function () {
+            var inputs = $(this).parent().parent().parent().find('input');
+            inputs.each(function () {
+                $(this).attr('readonly', false);
+            })
+            $(this).hide()
+            $(this).parent().find('.save-payment').show();
+        })
     })
 </script>
 <script>
-    $('[data-toggle=collapse]').on('click', function () {
+    $('[data-toggle=collapse]:not(.navbar-toggler)').on('click', function () {
         $('.collapse').removeClass('show');
     });
 </script>
@@ -385,8 +488,8 @@
         var tmplt = $('#second-type-contract-date-tmplt').clone().removeAttr('id');
         $('#second-type-contract-dates').append(tmplt);
         tmplt.show();
-        tmplt.find('.rmv').on('click',function () {
-            $(this).parent().remove();
+        tmplt.find('.rmv').on('click', function () {
+            $(this).parent().parent().parent().parent().remove();
         })
     })
 </script>
